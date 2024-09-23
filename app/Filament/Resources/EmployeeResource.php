@@ -4,9 +4,15 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\EmployeeResource\Pages;
 use App\Filament\Resources\EmployeeResource\RelationManagers;
+use App\Models\City;
+use App\Models\Department;
 use App\Models\Employee;
+use App\Models\State;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
+use Filament\Notifications\Collection;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -30,24 +36,37 @@ class EmployeeResource extends Resource
                     ->schema([
                         Forms\Components\Select::make('country_id')
                             ->relationship('country', 'name')
-                            // ->multiple()
                             ->preload()
+                            ->live()
+                            ->afterStateUpdated(function (Set $set){
+                                $set('state_id', null);
+                                $set('city_id', null);
+                            })
                             ->searchable(),
+
                         Forms\Components\Select::make('state_id')
-                            ->relationship('state', 'name' )
-                            // ->multiple()
+                            ->options(fn (Get $get) => State::query()
+                                ->where('country_id', $get('country_id'))
+                                ->pluck('name', 'id')->toArray()) // Convert to array
                             ->preload()
-                            ->searchable(),
-                        Forms\Components\Select::make('city_id')
-                            ->relationship('city', 'name')
-                            // ->multiple()
-                            ->preload()
-                            ->searchable(),
+                            ->live()
+                            ->afterStateUpdated(fn (Set $set) => $set('city_id', null))
+                            ->searchable()
+                            ->required(),
+
+                            Forms\Components\Select::make('city_id')
+                                ->options(fn (Get $get) => City::query()
+                                    ->where('state_id', $get('state_id'))
+                                    ->pluck('name', 'id')->toArray()) // Convert to array
+                                ->preload()
+                                ->live()
+                                ->searchable(),
+
                         Forms\Components\Select::make('department_id')
-                            ->relationship('department', 'name' )
-                            // ->multiple()
+                            ->relationship('department', 'name')
                             ->preload()
                             ->searchable(),
+
                     ])->columns(2),
                 Forms\Components\Section::make('User Name')
                     ->description('Put the user name details here.')
