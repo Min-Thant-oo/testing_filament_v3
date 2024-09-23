@@ -30,7 +30,7 @@ class CityResource extends Resource
     protected static ?string $slug = 'city';
 
     // put 3 in system management order 
-    protected static ?string $navigationSort = 3;
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {

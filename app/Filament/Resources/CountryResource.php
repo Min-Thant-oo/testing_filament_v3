@@ -27,7 +27,7 @@ class CountryResource extends Resource
     protected static ?string $navigationGroup = 'System Management';
 
     // put this at 1 in system management group 
-    protected static ?string $navigationSort = 1;
+    protected static ?int $navigationSort = 1;
 
     // for url
     protected static ?string $slug = 'countries';

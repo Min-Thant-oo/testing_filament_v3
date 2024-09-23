@@ -30,7 +30,7 @@ class DepartmentResource extends Resource
     protected static ?string $slug = 'departments';
 
     // put 
-    protected static ?string $navigationSort = 4;
+    protected static ?int $navigationSort = 4;
 
     public static function form(Form $form): Form
     {

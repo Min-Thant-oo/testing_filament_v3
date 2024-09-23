@@ -30,7 +30,7 @@ class StateResource extends Resource
     protected static ?string $slug = 'states';
 
     // put 
-    protected static ?string $navigationSort = 2;
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
